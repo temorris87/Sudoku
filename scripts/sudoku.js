@@ -23,9 +23,9 @@ class Cell {
 class Board {
     constructor() {
         this.cellsFilled = 0;
+        this.targetCell = null;
         this.createCells();
         this.initBoard(defaultBoard);
-        console.log(this.cellsFilled);
     }
 
     addDividingLines() {
@@ -46,6 +46,10 @@ class Board {
         }
     }
 
+    isBoardFilled() {
+        return this.cellsFilled === 81;
+    }
+
     initBoard(board) {
         let currentCell;
         for (let i = 0; i < board.length; i++) {
@@ -61,6 +65,7 @@ class Board {
                 }
             }
         }
+        this.setTargetCell(this.getCell(0, 0));
         this.redrawEntireBoard();
     }
 
@@ -98,6 +103,15 @@ class Board {
                 }
             }
         }
+    }
+
+    setTargetCell(cell) {
+        if (this.targetCell) {
+            this.targetCell.element.classList.remove('target');
+        }
+        this.targetCell = cell;
+        cell.element.classList.add('target');
+        this.redrawEntireBoard();
     }
 }
 

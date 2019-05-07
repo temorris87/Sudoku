@@ -68,6 +68,10 @@ main {
     border: 1px solid var(--dark-grey);
 }
 
+.target {
+    background-color: var(--bright-blue);
+}
+
 .default {
     color: var(--bright-grey);
 }
