@@ -74,10 +74,10 @@ class Board {
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 currentCell = this[Cell.getCellId(i, j)];
-                currentCell.number = board[i][j];
+                board[i][j] === ' ' ? currentCell.number = 0 : currentCell.number = board[i][j];
                 divBoard.appendChild(currentCell.element);
 
-                if (board[i][j] === ' ') {
+                if (board[i][j] !== ' ') {
                     currentCell.element.classList.add('default');
                 }
                 else {
@@ -107,6 +107,9 @@ class Board {
                 if (currentCell.number !== 0) {
                     currentCell.element.innerText = currentCell.number.toString();
                 }
+                else {
+                    currentCell.element.innerText = '';
+                }
             }
         }
     }
@@ -128,25 +131,48 @@ class Board {
     startEventListeners() {
         let body = document.querySelector('body');
 
-        // Add key events for moving the target square around.
+        // Add key events for when the mouse enters a cell.
         body.addEventListener('mouseover', (event) => {
             if (event.target.classList.contains('cell')) {
+
                 this.targetCell = this[event.target.id];
                 this.targetCell.element.classList.add('target');
 
-                if (event.target.classList.contains('default')) {
+                if (!event.target.classList.contains('default') &&
+                    this[event.target.id].number === 0) {
                     this.targetCell.element.innerText = '|';
                     this.targetCell.element.classList.add('blinking');
                 }
             }
         });
 
+        // Add key event for when the mouse leaves a cell.
         body.addEventListener('mouseout', (event) => {
             if (event.target.classList.contains('cell')) {
                 event.target.classList.remove('target');
                 event.target.classList.remove('blinking');
-                this.targetCell.element.innerText = this[event.target.id].number;
                 this.targetCell = null;
+                this.redrawEntireBoard();
+            }
+        });
+
+        // Add key events for when user types numbers 0 - 9.
+        body.addEventListener('keydown', (event) => {
+            if (this.targetCell !== null &&
+                !this.targetCell.element.classList.contains('default') &&
+                (event.key >= '1' && event.key <= '9')) {
+                this.targetCell.number = Number(event.key);
+                this.targetCell.element.classList.remove('blinking');
+                this.redrawEntireBoard();
+            }
+            else if (event.key === "Backspace") {
+                if (this.targetCell !== null &&
+                    !this.targetCell.element.classList.contains('default')) {
+                    this.targetCell.number = 0;
+                    this.redrawEntireBoard();
+                    this.targetCell.element.innerText = '|';
+                    this.targetCell.element.classList.add('blinking');
+                }
             }
         });
     }

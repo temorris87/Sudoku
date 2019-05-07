@@ -71,8 +71,9 @@ main {
 
 /* Code for blinking obtained: https://html-online.com/articles/blinking-text-css-animation/ */
 .blinking{
-    animation:blinkingText 0.8s infinite;
+    animation: blinkingText 0.8s infinite;
 }
+
 @keyframes blinkingText{
     0%{     color: var(--bright-grey);    }
     49%{    color: transparent; }
