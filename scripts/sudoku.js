@@ -12,7 +12,6 @@ class Cell {
 class Board {
     constructor() {
         this.createCells();
-        this['cell-02'].element.innerText = '1';
     }
 
     addDividingLines() {
