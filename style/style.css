@@ -66,6 +66,19 @@ main {
     width: 100%;
     height: 100%;
     border: 1px solid var(--dark-grey);
+    cursor: none;
+}
+
+/* Code for blinking obtained: https://html-online.com/articles/blinking-text-css-animation/ */
+.blinking{
+    animation:blinkingText 0.8s infinite;
+}
+@keyframes blinkingText{
+    0%{     color: var(--bright-grey);    }
+    49%{    color: transparent; }
+    50%{    color: transparent; }
+    99%{    color: transparent;  }
+    100%{   color: var(--bright-grey);    }
 }
 
 .target {

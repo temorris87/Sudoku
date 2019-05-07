@@ -133,12 +133,19 @@ class Board {
             if (event.target.classList.contains('cell')) {
                 this.targetCell = this[event.target.id];
                 this.targetCell.element.classList.add('target');
+
+                if (event.target.classList.contains('default')) {
+                    this.targetCell.element.innerText = '|';
+                    this.targetCell.element.classList.add('blinking');
+                }
             }
         });
 
         body.addEventListener('mouseout', (event) => {
             if (event.target.classList.contains('cell')) {
                 event.target.classList.remove('target');
+                event.target.classList.remove('blinking');
+                this.targetCell.element.innerText = this[event.target.id].number;
                 this.targetCell = null;
             }
         });
