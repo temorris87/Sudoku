@@ -1,3 +1,4 @@
+let boardWidth = 9;
 let divBoard = document.querySelector('#board');
 
 class Cell {
@@ -11,10 +12,31 @@ class Cell {
 class Board {
     constructor() {
         this.createCells();
+        this['cell-02'].element.innerText = '1';
     }
 
-    createCell(id) {
+    addDividingLines() {
+        for (let j = 0; j < boardWidth; j++) {
+            let id = 'cell-3' + j.toString();
+            this[id].element.classList.add('top');
+
+            id = 'cell-5' + j.toString();
+            this[id].element.classList.add('bottom');
+        }
+
+        for (let i = 0; i < boardWidth; i++) {
+            let id = 'cell-' + i.toString() + '3';
+            this[id].element.classList.add('left');
+
+            id = 'cell-' + i.toString() + + '5';
+            this[id].element.classList.add('right');
+        }
+    }
+
+    createCell(i, j) {
+        let id = 'cell-' + i.toString() + j.toString();
         let element = document.createElement('div');
+
         element.id = id;
         element.classList.add('cell');
         divBoard.appendChild(element);
@@ -23,13 +45,12 @@ class Board {
     }
 
     createCells() {
-        let id;
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
-                id = 'cell-' + i.toString() + j.toString();
-                this.createCell(id);
+                this.createCell(i, j);
             }
         }
+        this.addDividingLines();
     }
 }
 
