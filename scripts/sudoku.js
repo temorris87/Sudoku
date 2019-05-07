@@ -22,8 +22,10 @@ class Cell {
 
 class Board {
     constructor() {
+        this.cellsFilled = 0;
         this.createCells();
         this.initBoard(defaultBoard);
+        console.log(this.cellsFilled);
     }
 
     addDividingLines() {
@@ -45,9 +47,18 @@ class Board {
     }
 
     initBoard(board) {
+        let currentCell;
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
-                this.getCell(i, j).number = board[i][j];
+                currentCell = this.getCell(i, j);
+                currentCell.number = board[i][j];
+
+                if (board[i][j] === ' ') {
+                    currentCell.element.classList.add('default');
+                }
+                else {
+                    this.cellsFilled++;
+                }
             }
         }
         this.redrawEntireBoard();
@@ -83,7 +94,6 @@ class Board {
             for (let j = 0; j < boardWidth; j++) {
                 currentCell = this.getCell(i, j);
                 if (currentCell.number !== 0) {
-                    console.log('hello');
                     currentCell.element.innerText = currentCell.number.toString();
                 }
             }

@@ -19,7 +19,7 @@ body {
     margin: 0;
     font-family: 'Copse', serif;
     background-color: var(--background-color);
-    color: white;
+    color: azure;
 }
 
 h1, nav > a {
@@ -38,7 +38,7 @@ header {
     justify-content: space-between;
     width: 80%;
     margin: 0 auto;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid azure;
 }
 
 main {
@@ -57,6 +57,8 @@ main {
 }
 
 .cell {
+    font-size: 1.5em;
+    color: azure;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -66,18 +68,22 @@ main {
     border: 1px solid var(--dark-grey);
 }
 
+.default {
+    color: var(--bright-grey);
+}
+
 .top {
-    border-top: 2px solid var(--bright-grey);
+    border-top: 2px solid var(--bright-blue);
 }
 
 .right {
-    border-right: 2px solid var(--bright-grey);
+    border-right: 2px solid var(--bright-blue);
 }
 
 .bottom {
-    border-bottom: 2px solid var(--bright-grey);
+    border-bottom: 2px solid var(--bright-blue);
 }
 
 .left {
-    border-left: 2px solid var(--bright-grey);
+    border-left: 2px solid var(--bright-blue);
 }
