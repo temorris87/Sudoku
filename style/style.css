@@ -69,7 +69,7 @@ main {
 }
 
 .target {
-    background-color: var(--bright-blue);
+    background-color: var(--dark-blue);
 }
 
 .default {
