@@ -54,6 +54,7 @@ main {
     grid-template-columns: 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11%;
     grid-template-rows: 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11%;
     margin: 0 auto;
+    position: relative;
 }
 
 .cell {
@@ -84,6 +85,12 @@ main {
 
 .target {
     background-color: var(--dark-blue);
+    border: 1px solid var(--bright-blue);
+}
+
+.target-note {
+    background-color: var(--dark-grey);
+    border: 1px solid var(--bright-grey);
 }
 
 .default {
@@ -104,4 +111,22 @@ main {
 
 .left {
     border-left: 2px solid var(--bright-blue);
+}
+
+.pencil {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.5rem;
+    position: absolute;
+    height: 11%;
+    width: 11%;
+    top: 44.4%;
+    left: -15%;
+    user-select: none;
+    color: var(--dark-grey);
+}
+
+.pencil-selected {
+    color: var(--bright-blue);
 }

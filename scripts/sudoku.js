@@ -166,8 +166,10 @@ class Board {
 class Sudoku {
     constructor() {
         this.board = new Board();
+        this.noteMode = false;
         this.startEventListeners();
         this.addDividingLines();
+        Sudoku.initNoteIcon();
         this.redrawEntireBoard();
     }
 
@@ -198,6 +200,13 @@ class Sudoku {
         }
     }
 
+    static initNoteIcon() {
+        let noteIcon = document.createElement('div');
+        noteIcon.classList.add('pencil');
+        noteIcon.innerHTML = '&#9998;';
+        document.querySelector('#board').appendChild(noteIcon);
+    }
+
     redrawEntireBoard() {
         let currentCell;
         for (let i = 0; i < boardWidth; i++) {
@@ -213,6 +222,26 @@ class Sudoku {
         }
     }
 
+    addAppropriateTargetClass() {
+        let targetClassList = this.board.targetCell.element.classList;
+        if (this.noteMode) {
+            targetClassList.add("target-note");
+        }
+        else {
+            targetClassList.add("target");
+        }
+    }
+
+    removeAppropriateTargetClass() {
+        let targetClassList = this.board.targetCell.element.classList;
+        if (this.noteMode) {
+            targetClassList.remove("target-note");
+        }
+        else {
+            targetClassList.remove("target");
+        }
+    }
+
     startEventListeners() {
         let body = document.querySelector("body");
 
@@ -221,7 +250,7 @@ class Sudoku {
             if (event.target.classList.contains("cell")) {
 
                 this.board.targetCell = this.board.getCell(event.target.id);
-                this.board.targetCell.element.classList.add("target");
+                this.addAppropriateTargetClass(this.board.targetCell.element);
 
                 if (!event.target.classList.contains("default") && this.board.getCell(event.target.id).number === 0) {
                     Animation.setBlinkingCursor(this.board.targetCell);
@@ -232,7 +261,7 @@ class Sudoku {
         // Add key event for when the mouse leaves a cell.
         body.addEventListener("mouseout", (event) => {
             if (event.target.classList.contains("cell")) {
-                event.target.classList.remove("target");
+                this.removeAppropriateTargetClass();
                 event.target.classList.remove("blinking");
                 this.board.targetCell = null;
                 this.redrawEntireBoard();
@@ -242,12 +271,17 @@ class Sudoku {
         // Add key events for when user types numbers 0 - 9.
         body.addEventListener("keydown", (event) => {
             if (isNonEmptyUserCellAndLegalKeypress(this.board.targetCell, event.key)) {
-                this.board.enterNumber(this.board.targetCell.id, Number(event.key));
-                this.board.targetCell.element.classList.remove("blinking");
-                this.redrawEntireBoard();
+                if (this.noteMode) {
 
-                if (this.board.isBoardFilled()) {
-                    this.alertWinner();
+                }
+                else {
+                    this.board.enterNumber(this.board.targetCell.id, Number(event.key));
+                    this.board.targetCell.element.classList.remove("blinking");
+                    this.redrawEntireBoard();
+
+                    if (this.board.isBoardFilled()) {
+                        this.alertWinner();
+                    }
                 }
             }
             else if (event.key === "Backspace") {
@@ -258,6 +292,14 @@ class Sudoku {
                 }
             }
         });
+
+        body.addEventListener('click', (event) => {
+            if (event.target.classList.contains('pencil')) {
+                event.target.classList.toggle('pencil-selected');
+                this.noteMode ? this.noteMode = false : this.noteMode = true;
+            }
+        });
+
 
         function isNonEmptyUserCellAndLegalKeypress(target, key) {
             return target !== null &&
