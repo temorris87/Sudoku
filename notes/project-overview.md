@@ -60,9 +60,10 @@ Time frames are also key in the development cycle.  You have limited time to cod
 
 | Component | Priority | Estimated Time | Time Invested | Actual Time |
 | --- | :---: |  :---: | :---: | :---: |
-| Default game board. | H | 2hrs|  | 1.5hrs |
-| Check if valid board. / Alert User | H | 2.5hrs|  |  |
-| Clean UI / Color Theme | H | 3hrs|  | 1.5hrs |
+| Default game board. | H | 2hrs|  | 2 hrs |
+| Check if valid board. / Alert User | H | 2.5 hrs|  | 1 hr |
+| Clean UI / Color Theme | H | 3hrs|  | 5 hrs |
+| Refactoring / Design | H | 4 hrs |  | 3 hrs |
 | Allow user to take notes. | H | 3hrs | | |
 | Add default game boards. | L | 1.5hrs|  |  |
 | Give user ability to identify which numbers are inserted incorrectly. | L | 3hrs | | |
