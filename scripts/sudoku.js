@@ -31,7 +31,31 @@ class Cell {
         this.element.id = this.id;
         this.element.classList.add("cell");
 
-        this.notes = [false, false, false, false, false, false, false, false, false];
+        this.noteCount = 0;
+        this.notes = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
+    hasNotes() {
+        return this.noteCount !== 0;
+    }
+
+    addNumberNote(number) {
+        if (!this.notes[number - 1]) {
+            this.notes[number - 1] = number;
+            this.noteCount++;
+        }
+    }
+
+    removeNumberNote(number) {
+        if (this.notes[number - 1]) {
+            this.notes[number - 1] = 0;
+            this.noteCount--;
+        }
+
+    }
+
+    getNumberNote(i, j) {
+        return this.notes[i * boxWidth + j];
     }
 
     getCellId() {
@@ -171,6 +195,11 @@ class Sudoku {
         this.addDividingLines();
         Sudoku.initNoteIcon();
         this.redrawEntireBoard();
+        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(1);
+        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(2);
+        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(4);
+        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(5);
+        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(9);
     }
 
     alertWinner() {
@@ -207,6 +236,29 @@ class Sudoku {
         document.querySelector('#board').appendChild(noteIcon);
     }
 
+    drawNoteCell(id) {
+        let cell = this.board.getCell(id);
+        if (cell.hasNotes()) {
+            this.board.getCell(id).element.classList.add('note-cell-parent');
+            for (let i = 0; i < boxWidth; i++) {
+                for (let j = 0; j < boxWidth; j++) {
+                    let noteCell = document.createElement('div');
+                    noteCell.id = `${id}-${i}${j}`;
+                    noteCell.classList.add('note-cell');
+
+                    let noteFound = cell.getNumberNote(i, j);
+                    if (noteFound) {
+                        noteCell.innerText = noteFound;
+                    }
+                    cell.element.appendChild(noteCell);
+                }
+            }
+        }
+//        else {
+//            this.board.getCell(id).classList.remove('note-cell-parent');
+//        }
+    }
+
     redrawEntireBoard() {
         let currentCell;
         for (let i = 0; i < boardWidth; i++) {
@@ -214,6 +266,10 @@ class Sudoku {
                 currentCell = this.board.getCell(Cell.getCellId(i, j));
                 if (currentCell.number !== 0) {
                     currentCell.element.innerText = currentCell.number.toString();
+                }
+                else if (currentCell.hasNotes()) {
+                    currentCell.element.innerText = "";
+                    this.drawNoteCell(currentCell.id);
                 }
                 else {
                     currentCell.element.innerText = "";
