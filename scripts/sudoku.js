@@ -49,25 +49,10 @@ class Board {
         this.targetCell = null;
         this.createCells();
         this.initBoard(defaultBoard);
-        this.startEventListeners();
     }
 
-    addDividingLines() {
-        for (let j = 0; j < boardWidth; j++) {
-            let id = "cell-3" + j.toString();
-            this[id].element.classList.add("top");
-
-            id = "cell-5" + j.toString();
-            this[id].element.classList.add("bottom");
-        }
-
-        for (let i = 0; i < boardWidth; i++) {
-            let id = "cell-" + i.toString() + "3";
-            this[id].element.classList.add("left");
-
-            id = "cell-" + i.toString() + +"5";
-            this[id].element.classList.add("right");
-        }
+    getCell(id) {
+        return this[id];
     }
 
     isBoardFilled() {
@@ -141,7 +126,6 @@ class Board {
                 }
             }
         }
-        this.redrawEntireBoard();
     }
 
     createCells() {
@@ -150,22 +134,6 @@ class Board {
             for (let j = 0; j < 9; j++) {
                 cell = new Cell(i, j);
                 this[cell.id] = cell;
-            }
-        }
-        this.addDividingLines();
-    }
-
-    redrawEntireBoard() {
-        let currentCell;
-        for (let i = 0; i < boardWidth; i++) {
-            for (let j = 0; j < boardWidth; j++) {
-                currentCell = this[Cell.getCellId(i, j)];
-                if (currentCell.number !== 0) {
-                    currentCell.element.innerText = currentCell.number.toString();
-                }
-                else {
-                    currentCell.element.innerText = "";
-                }
             }
         }
     }
@@ -193,13 +161,55 @@ class Board {
             this.cellsFilled--;
         }
     }
+}
+
+class Sudoku {
+    constructor() {
+        this.board = new Board();
+        this.startEventListeners();
+        this.addDividingLines();
+        this.redrawEntireBoard();
+    }
 
     alertWinner() {
-        if (this.isValidBoard()) {
+        if (this.board.isValidBoard()) {
             alert("Winner!");
         }
         else {
             alert("Sorry, you messed up somewhere.");
+        }
+    }
+
+    addDividingLines() {
+        for (let j = 0; j < boardWidth; j++) {
+            let id = "cell-3" + j.toString();
+            this.board.getCell(id).element.classList.add("top");
+
+            id = "cell-5" + j.toString();
+            this.board.getCell(id).element.classList.add("bottom");
+        }
+
+        for (let i = 0; i < boardWidth; i++) {
+            let id = "cell-" + i.toString() + "3";
+            this.board.getCell(id).element.classList.add("left");
+
+            id = "cell-" + i.toString() + +"5";
+            this.board.getCell(id).element.classList.add("right");
+        }
+    }
+
+    redrawEntireBoard() {
+        let currentCell;
+        for (let i = 0; i < boardWidth; i++) {
+            for (let j = 0; j < boardWidth; j++) {
+                currentCell = this.board.getCell(Cell.getCellId(i, j));
+                if (currentCell.number !== 0) {
+                    currentCell.element.innerText = currentCell.number.toString();
+                }
+                else {
+                    currentCell.element.innerText = "";
+                }
+            }
         }
     }
 
@@ -210,11 +220,11 @@ class Board {
         body.addEventListener("mouseover", (event) => {
             if (event.target.classList.contains("cell")) {
 
-                this.targetCell = this[event.target.id];
-                this.targetCell.element.classList.add("target");
+                this.board.targetCell = this.board.getCell(event.target.id);
+                this.board.targetCell.element.classList.add("target");
 
-                if (!event.target.classList.contains("default") && this[event.target.id].number === 0) {
-                    Animation.setBlinkingCursor(this.targetCell);
+                if (!event.target.classList.contains("default") && this.board.getCell(event.target.id).number === 0) {
+                    Animation.setBlinkingCursor(this.board.targetCell);
                 }
             }
         });
@@ -224,27 +234,27 @@ class Board {
             if (event.target.classList.contains("cell")) {
                 event.target.classList.remove("target");
                 event.target.classList.remove("blinking");
-                this.targetCell = null;
+                this.board.targetCell = null;
                 this.redrawEntireBoard();
             }
         });
 
         // Add key events for when user types numbers 0 - 9.
         body.addEventListener("keydown", (event) => {
-            if (isNonEmptyUserCellAndLegalKeypress(this.targetCell, event.key)) {
-                this.enterNumber(this.targetCell.id, Number(event.key));
-                this.targetCell.element.classList.remove("blinking");
+            if (isNonEmptyUserCellAndLegalKeypress(this.board.targetCell, event.key)) {
+                this.board.enterNumber(this.board.targetCell.id, Number(event.key));
+                this.board.targetCell.element.classList.remove("blinking");
                 this.redrawEntireBoard();
 
-                if (this.isBoardFilled()) {
+                if (this.board.isBoardFilled()) {
                     this.alertWinner();
                 }
             }
             else if (event.key === "Backspace") {
-                if (isNonEmptyUserCellForDelete(this, this.targetCell)) {
-                    this.removeNumber(this.targetCell.id);
+                if (isNonEmptyUserCellForDelete(this.board, this.board.targetCell)) {
+                    this.board.removeNumber(this.board.targetCell.id);
                     this.redrawEntireBoard();
-                    Animation.setBlinkingCursor(this.targetCell);
+                    Animation.setBlinkingCursor(this.board.targetCell);
                 }
             }
         });
@@ -263,4 +273,4 @@ class Board {
     }
 }
 
-board = new Board();
+let game = new Sudoku();
