@@ -218,15 +218,6 @@ class Sudoku {
         this.redrawEntireBoard();
     }
 
-    alertWinner() {
-        if (this.board.isValidBoard()) {
-            alert("Winner!");
-        }
-        else {
-            alert("Sorry, you messed up somewhere.");
-        }
-    }
-
     addDividingLines() {
         for (let j = 0; j < boardWidth; j++) {
             let id = "cell-3" + j.toString();
@@ -265,7 +256,7 @@ class Sudoku {
     static initCheckBoardIcon() {
         let checkIcon = document.createElement('div');
         checkIcon.id = 'check-board';
-        checkIcon.classList.add('icon');
+        checkIcon.classList.add('notification');
         checkIcon.innerHTML = '&#10004';
         document.querySelector('#board').appendChild(checkIcon);
     }
@@ -368,15 +359,32 @@ class Sudoku {
         document.querySelector('#pencil').classList.toggle('pencil-selected');
         this.noteMode ? this.noteMode = false : this.noteMode = true;
 
-        let targetClassList = this.board.targetCell.element.classList;
+        if (this.board.targetCell != null) {
+            let targetClassList = this.board.targetCell.element.classList;
 
-        if (targetClassList.contains('target-note')) {
-            targetClassList.remove('target-note');
-            targetClassList.add('target');
+            if (targetClassList.contains('target-note')) {
+                targetClassList.remove('target-note');
+                targetClassList.add('target');
+            }
+            else {
+                targetClassList.remove('target');
+                targetClassList.add('target-note');
+            }
+        }
+    }
+
+    hideWinningIcon() {
+        let icon = document.querySelector('#check-board');
+        icon.style.color = '#25274D';
+    }
+
+    highlightWinningIcon() {
+        let icon = document.querySelector('#check-board');
+        if (this.board.isValidBoard()) {
+            icon.style.color = '#29648A';
         }
         else {
-            targetClassList.remove('target');
-            targetClassList.add('target-note');
+            icon.style.color = 'red';
         }
     }
 
@@ -425,7 +433,7 @@ class Sudoku {
                     this.redrawEntireBoard();
 
                     if (this.board.isBoardFilled()) {
-                        this.alertWinner();
+                        this.highlightWinningIcon();
                     }
                 }
             }
@@ -433,6 +441,8 @@ class Sudoku {
                 if (this.board.targetCell.hasNotes()) {
                     return;
                 }
+
+                this.hideWinningIcon();
 
                 if (isNonEmptyUserCellForDelete(this.board, this.board.targetCell)) {
                     this.board.removeNumber(this.board.targetCell.id);
@@ -480,14 +490,12 @@ class Sudoku {
         body.addEventListener('click', (event) => {
             if (event.target.id === 'new-game') {
                 if (confirm("Are you sure you want to start a new game? All progress will be lost.")) {
+                    this.hideWinningIcon();
                     this.initBoard();
                 }
             }
             else if (event.target.classList.contains('pencil')) {
                 this.togglNoteMode();
-            }
-            else if (event.target.id === "check-board") {
-                console.log("Checking board");
             }
         });
 

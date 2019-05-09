@@ -115,7 +115,7 @@ main {
     border-left: 2px solid var(--bright-blue);
 }
 
-.icon {
+.icon, .notification {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,7 +125,15 @@ main {
     color: var(--dark-grey);
     height: 11%;
     width: 11%;
+}
+
+.icon {
     left: -15%;
+}
+
+.notification {
+    right: -15%;
+    color: var(--background-color);
 }
 
 .icon:hover {
@@ -133,15 +141,15 @@ main {
 }
 
 #new-game {
-    top: 33.4%;
+    top: 38.6%;
 }
 
 .pencil {
-    top: 44.4%;
+    top: 49.9%;
 }
 
 #check-board {
-    top: 55.4%;
+    top: 44.4%;
 }
 
 .pencil-selected {
