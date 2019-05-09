@@ -245,6 +245,7 @@ class Sudoku {
 
     static initNoteIcon() {
         let noteIcon = document.createElement('div');
+        noteIcon.id = 'pencil';
         noteIcon.classList.add('pencil');
         noteIcon.innerHTML = '&#9998;';
         document.querySelector('#board').appendChild(noteIcon);
@@ -302,7 +303,8 @@ class Sudoku {
         }
     }
 
-    addAppropriateTargetClass() {
+    changeTargetCell(target) {
+        this.board.targetCell = this.board.getCell(target.id);
         let targetClassList = this.board.targetCell.element.classList;
         if (this.noteMode) {
             targetClassList.add("target-note");
@@ -310,15 +312,47 @@ class Sudoku {
         else {
             targetClassList.add("target");
         }
+
+        if (!this.board.targetCell.hasNotes()) {
+            if (!target.classList.contains("default") && this.board.getCell(target.id).number === 0) {
+                Animation.setBlinkingCursor(this.board.targetCell);
+            }
+        }
     }
 
-    removeAppropriateTargetClass() {
+    removeTargetCell(target) {
         let targetClassList = this.board.targetCell.element.classList;
         if (this.noteMode) {
             targetClassList.remove("target-note");
         }
         else {
             targetClassList.remove("target");
+        }
+        target.classList.remove("blinking");
+        this.board.targetCell = null;
+        this.redrawEntireBoard();
+    }
+
+    keyPressUpdateTarget(i, j, target) {
+        this.removeTargetCell(target);
+        let id = Cell.getCellId(i, j);
+        this.board.targetCell = this.board.getCell(id);
+        this.changeTargetCell(this.board.getCell(id).element);
+    }
+
+    togglNoteMode() {
+        document.querySelector('#pencil').classList.toggle('pencil-selected');
+        this.noteMode ? this.noteMode = false : this.noteMode = true;
+
+        let targetClassList = this.board.targetCell.element.classList;
+
+        if (targetClassList.contains('target-note')) {
+            targetClassList.remove('target-note');
+            targetClassList.add('target');
+        }
+        else {
+            targetClassList.remove('target');
+            targetClassList.add('target-note');
         }
     }
 
@@ -328,26 +362,14 @@ class Sudoku {
         // Add key events for when the mouse enters a cell.
         body.addEventListener("mouseover", (event) => {
             if (event.target.classList.contains("cell")) {
-                this.board.targetCell = this.board.getCell(event.target.id);
-                this.addAppropriateTargetClass(this.board.targetCell.element);
-
-                if (this.board.targetCell.hasNotes()) {
-                    return;
-                }
-
-                if (!event.target.classList.contains("default") && this.board.getCell(event.target.id).number === 0) {
-                    Animation.setBlinkingCursor(this.board.targetCell);
-                }
+                this.changeTargetCell(event.target);
             }
         });
 
         // Add key event for when the mouse leaves a cell.
         body.addEventListener("mouseout", (event) => {
             if (event.target.classList.contains("cell")) {
-                this.removeAppropriateTargetClass();
-                event.target.classList.remove("blinking");
-                this.board.targetCell = null;
-                this.redrawEntireBoard();
+                this.removeTargetCell(event.target);
             }
         });
 
@@ -394,12 +416,46 @@ class Sudoku {
                     Animation.setBlinkingCursor(this.board.targetCell);
                 }
             }
+            else if (event.key === "ArrowUp" || event.key === "k" || event.key === "w") {
+                event.preventDefault();
+                let i = this.board.targetCell.i - 1;
+                let j = this.board.targetCell.j;
+                if (i >= 0 && i < boardWidth) {
+                    this.keyPressUpdateTarget(i, j, event.target);
+                }
+            }
+            else if (event.key === "ArrowRight" || event.key === "l" || event.key === "d") {
+                event.preventDefault();
+                let i = this.board.targetCell.i;
+                let j = this.board.targetCell.j + 1;
+                if (j >= 0 && j < boardWidth) {
+                    this.keyPressUpdateTarget(i, j, event.target);
+                }
+            }
+            else if (event.key === "ArrowDown" || event.key === "j" || event.key === "s") {
+                event.preventDefault();
+                let i = this.board.targetCell.i + 1;
+                let j = this.board.targetCell.j;
+                if (i >= 0 && i < boardWidth) {
+                    this.keyPressUpdateTarget(i, j, event.target);
+                }
+            }
+            else if (event.key === "ArrowLeft" || event.key === "h" || event.key === "a") {
+                event.preventDefault();
+                let i = this.board.targetCell.i;
+                let j = this.board.targetCell.j - 1;
+                if (j >= 0 && j < boardWidth) {
+                    this.keyPressUpdateTarget(i, j, event.target);
+                }
+            }
+            else if (event.key === 'n') {
+                this.togglNoteMode();
+            }
         });
 
         body.addEventListener('click', (event) => {
             if (event.target.classList.contains('pencil')) {
-                event.target.classList.toggle('pencil-selected');
-                this.noteMode ? this.noteMode = false : this.noteMode = true;
+                this.togglNoteMode();
             }
         });
 
