@@ -213,6 +213,8 @@ class Sudoku {
         this.startEventListeners();
         this.addDividingLines();
         Sudoku.initNoteIcon();
+        Sudoku.initNewGameIcon();
+        Sudoku.initCheckBoardIcon();
         this.redrawEntireBoard();
     }
 
@@ -243,12 +245,34 @@ class Sudoku {
         }
     }
 
+    static initNewGameIcon() {
+        let newGameIcon = document.createElement('div');
+        newGameIcon.id = 'new-game';
+        newGameIcon.classList.add('icon');
+        newGameIcon.innerHTML = '&#8853;';
+        document.querySelector('#board').appendChild(newGameIcon);
+    }
+
     static initNoteIcon() {
         let noteIcon = document.createElement('div');
         noteIcon.id = 'pencil';
         noteIcon.classList.add('pencil');
+        noteIcon.classList.add('icon');
         noteIcon.innerHTML = '&#9998;';
         document.querySelector('#board').appendChild(noteIcon);
+    }
+
+    static initCheckBoardIcon() {
+        let checkIcon = document.createElement('div');
+        checkIcon.id = 'check-board';
+        checkIcon.classList.add('icon');
+        checkIcon.innerHTML = '&#10004';
+        document.querySelector('#board').appendChild(checkIcon);
+    }
+
+    initBoard() {
+        this.board.initBoard(defaultBoard);
+        this.redrawEntireBoard();
     }
 
     drawNoteCell(id) {
@@ -454,8 +478,16 @@ class Sudoku {
         });
 
         body.addEventListener('click', (event) => {
-            if (event.target.classList.contains('pencil')) {
+            if (event.target.id === 'new-game') {
+                if (confirm("Are you sure you want to start a new game? All progress will be lost.")) {
+                    this.initBoard();
+                }
+            }
+            else if (event.target.classList.contains('pencil')) {
                 this.togglNoteMode();
+            }
+            else if (event.target.id === "check-board") {
+                console.log("Checking board");
             }
         });
 

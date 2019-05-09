@@ -22,34 +22,20 @@ body {
     color: azure;
 }
 
-h1, nav > a {
+h1 {
     font-family: 'Trocchi', serif;
-    font-size: 2em;
-}
-
-nav > a {
-    text-decoration: none;
-}
-
-header {
-    height: 10%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 80%;
-    margin: 0 auto;
-    border-bottom: 2px solid azure;
+    font-size: 3rem;
 }
 
 main {
-    height: 90%;
+    height: 100%;
     display: flex;
     align-items: center;
 }
 
 #board {
-    width: 80vh;
-    height: 80vh;
+    width: 95vh;
+    height: 95vh;
     display: grid;
     grid-template-columns: 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11%;
     grid-template-rows: 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11% 11.11%;
@@ -129,18 +115,33 @@ main {
     border-left: 2px solid var(--bright-blue);
 }
 
-.pencil {
+.icon {
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2.5rem;
     position: absolute;
-    height: 11%;
-    width: 11%;
-    top: 44.4%;
-    left: -15%;
     user-select: none;
     color: var(--dark-grey);
+    height: 11%;
+    width: 11%;
+    left: -15%;
+}
+
+.icon:hover {
+    color: var(--dark-blue);
+}
+
+#new-game {
+    top: 33.4%;
+}
+
+.pencil {
+    top: 44.4%;
+}
+
+#check-board {
+    top: 55.4%;
 }
 
 .pencil-selected {
