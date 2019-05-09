@@ -3,7 +3,8 @@ let boardWidth = 9;
 let numberOfCells = 81;
 let divBoard = document.querySelector("#board");
 
-let defaultBoard = [["4", " ", "8", " ", " ", "7", "2", " ", "1"],
+let defaultBoard = [
+    ["4", " ", "8", " ", " ", "7", "2", " ", "1"],
     [" ", "3", " ", " ", "8", " ", "9", " ", " "],
     ["6", "7", "5", " ", "1", " ", " ", "3", " "],
     [" ", "5", " ", " ", " ", "4", " ", "2", "3"],
@@ -11,7 +12,8 @@ let defaultBoard = [["4", " ", "8", " ", " ", "7", "2", " ", "1"],
     [" ", " ", " ", " ", " ", " ", "7", " ", "5"],
     [" ", " ", "3", "9", " ", " ", " ", " ", "7"],
     [" ", " ", "1", "7", "6", "3", " ", "4", " "],
-    ["5", " ", " ", " ", "4", "2", "3", " ", "9"]];
+    ["5", " ", " ", " ", "4", "2", "3", " ", "9"]
+];
 
 class Animation {
     static setBlinkingCursor(target) {
@@ -35,8 +37,17 @@ class Cell {
         this.notes = [0, 0, 0, 0, 0, 0, 0, 0, 0];
     }
 
+    clearNotes() {
+        this.noteCount = 0;
+        this.notes = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+    }
+
     hasNotes() {
         return this.noteCount !== 0;
+    }
+
+    isNoted(number) {
+        return this.notes[number - 1] !== 0;
     }
 
     addNumberNote(number) {
@@ -185,6 +196,14 @@ class Board {
             this.cellsFilled--;
         }
     }
+
+    addNote(number) {
+        this.targetCell.addNumberNote(number);
+    }
+
+    removeNote(number) {
+        this.targetCell.removeNumberNote(number);
+    }
 }
 
 class Sudoku {
@@ -195,11 +214,6 @@ class Sudoku {
         this.addDividingLines();
         Sudoku.initNoteIcon();
         this.redrawEntireBoard();
-        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(1);
-        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(2);
-        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(4);
-        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(5);
-        this.board.getCell(Cell.getCellId(0, 1)).addNumberNote(9);
     }
 
     alertWinner() {
@@ -259,6 +273,16 @@ class Sudoku {
 //        }
     }
 
+    removeNoteCellDivs() {
+        let cellDiv = this.board.targetCell.element;
+        while (cellDiv.lastChild) {
+            cellDiv.removeChild(cellDiv.lastChild);
+        }
+        cellDiv.classList.remove('note-cell-parent');
+        // TODO Animation not working after removal of children, need to figure out why and fix.
+        Animation.setBlinkingCursor(this.board.targetCell);
+    }
+
     redrawEntireBoard() {
         let currentCell;
         for (let i = 0; i < boardWidth; i++) {
@@ -304,9 +328,12 @@ class Sudoku {
         // Add key events for when the mouse enters a cell.
         body.addEventListener("mouseover", (event) => {
             if (event.target.classList.contains("cell")) {
-
                 this.board.targetCell = this.board.getCell(event.target.id);
                 this.addAppropriateTargetClass(this.board.targetCell.element);
+
+                if (this.board.targetCell.hasNotes()) {
+                    return;
+                }
 
                 if (!event.target.classList.contains("default") && this.board.getCell(event.target.id).number === 0) {
                     Animation.setBlinkingCursor(this.board.targetCell);
@@ -328,9 +355,25 @@ class Sudoku {
         body.addEventListener("keydown", (event) => {
             if (isNonEmptyUserCellAndLegalKeypress(this.board.targetCell, event.key)) {
                 if (this.noteMode) {
-
+                    if (this.board.targetCell.isNoted(event.key)) {
+                        this.board.removeNote(event.key);
+                        if (!this.board.targetCell.hasNotes()) {
+                            this.removeNoteCellDivs();
+                        }
+                        this.redrawEntireBoard();
+                    }
+                    else {
+                        this.board.addNote(event.key);
+                        this.board.targetCell.element.classList.remove("blinking");
+                        this.redrawEntireBoard();
+                    }
                 }
                 else {
+                    if (this.board.targetCell.hasNotes()) {
+                        this.board.targetCell.clearNotes();
+                        this.removeNoteCellDivs();
+                    }
+
                     this.board.enterNumber(this.board.targetCell.id, Number(event.key));
                     this.board.targetCell.element.classList.remove("blinking");
                     this.redrawEntireBoard();
@@ -341,6 +384,10 @@ class Sudoku {
                 }
             }
             else if (event.key === "Backspace") {
+                if (this.board.targetCell.hasNotes()) {
+                    return;
+                }
+
                 if (isNonEmptyUserCellForDelete(this.board, this.board.targetCell)) {
                     this.board.removeNumber(this.board.targetCell.id);
                     this.redrawEntireBoard();
@@ -355,7 +402,6 @@ class Sudoku {
                 this.noteMode ? this.noteMode = false : this.noteMode = true;
             }
         });
-
 
         function isNonEmptyUserCellAndLegalKeypress(target, key) {
             return target !== null &&
