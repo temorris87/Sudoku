@@ -22,6 +22,47 @@ class Animation {
     }
 }
 
+class Form {
+    constructor(sudoku) {
+        this.sudoku = sudoku;
+        this.gameForm = document.querySelector('#custom-form');
+        this.formText = document.querySelector('#form-prompt');
+        this.yesButton = document.querySelector('#btn-new-game-yes');
+        this.noButton = document.querySelector('#btn-new-game-no');
+        this.initializeYesListener();
+        this.initializeNoListener();
+    }
+
+    updatePrompt(prompt) {
+        this.formText.innerText = prompt;
+    }
+
+    showForm(prompt) {
+        this.updatePrompt(prompt);
+        this.gameForm.style.display = "flex";
+    }
+
+    hideForm() {
+        this.gameForm.style.display = "none";
+    }
+
+    initializeYesListener() {
+        this.yesButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.sudoku.initBoard();
+            this.sudoku.redrawEntireBoard();
+            this.hideForm();
+        });
+    }
+
+    initializeNoListener() {
+        this.noButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.hideForm();
+        });
+    }
+}
+
 class Cell {
     constructor(i, j) {
         this.i = i;
@@ -216,6 +257,7 @@ class Sudoku {
         Sudoku.initNewGameIcon();
         Sudoku.initCheckBoardIcon();
         this.redrawEntireBoard();
+        this.form = new Form(this);
     }
 
     addDividingLines() {
@@ -489,7 +531,8 @@ class Sudoku {
 
         body.addEventListener('click', (event) => {
             if (event.target.id === 'new-game') {
-                if (confirm("Are you sure you want to start a new game? All progress will be lost.")) {
+                this.form.showForm("Are you sure you want to start a new game? All progress will be lost.");
+                if (this.form.selected) {
                     this.hideWinningIcon();
                     this.initBoard();
                 }

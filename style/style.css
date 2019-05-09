@@ -155,3 +155,35 @@ main {
 .pencil-selected {
     color: var(--bright-blue);
 }
+
+#custom-form {
+    display: none;
+    font-size: 1.5em;
+    text-align: center;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    position: absolute;
+    width: 60%;
+    height: 30%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 2px solid white;
+    border-radius: 50px;
+
+    /* Code generated: https://www.cssmatic.com/box-shadow */
+    -webkit-box-shadow: 5px 2px 66px 21px rgba(41,100,138,1);
+    -moz-box-shadow: 5px 2px 66px 21px rgba(41,100,138,1);
+    box-shadow: 5px 2px 66px 21px rgba(41,100,138,1);
+}
+
+#play-again-form > p {
+    width: 90%;
+}
+
+#new-game-btns > button{
+    font-size: 1em;
+}
