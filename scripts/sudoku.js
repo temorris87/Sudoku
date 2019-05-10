@@ -39,7 +39,6 @@ class Form {
     initializeYesListener() {
         this.yesButton.addEventListener("click", (event) => {
             event.preventDefault();
-            console.log('Calling callback');
             this.callback();
             this.hideForm();
         });
@@ -259,14 +258,12 @@ class Sudoku {
 
     removeDefaultFromAllCells() {
         let cells = document.querySelectorAll('.cell');
-        console.log(cells);
         for (let i = 0; i < cells.length; i++) {
             cells[i].classList.remove('default');
         }
     }
 
     updateToNewGame() {
-        console.log('Entered update to new game.');
         this.removeDefaultFromAllCells();
         this.board = new Board();
         this.noteMode = false;
