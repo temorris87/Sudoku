@@ -85,12 +85,12 @@ main {
     100%{   color: var(--bright-grey);    }
 }
 
-.target {
+.target-note {
     background-color: var(--dark-blue);
     border: 1px solid var(--bright-blue);
 }
 
-.target-note {
+.target {
     background-color: var(--dark-grey);
     border: 1px solid var(--bright-grey);
 }

@@ -23,22 +23,24 @@ class Animation {
 }
 
 class Form {
-    constructor(sudoku) {
-        this.sudoku = sudoku;
+    constructor(prompt, callback) {
+        this.prompt = prompt;
+        this.callback = callback;
         this.gameForm = document.querySelector('#custom-form');
         this.formText = document.querySelector('#form-prompt');
         this.yesButton = document.querySelector('#btn-new-game-yes');
         this.noButton = document.querySelector('#btn-new-game-no');
+
         this.initializeYesListener();
         this.initializeNoListener();
     }
 
-    updatePrompt(prompt) {
-        this.formText.innerText = prompt;
+    updatePrompt() {
+        this.formText.innerText = this.prompt;
     }
 
-    showForm(prompt) {
-        this.updatePrompt(prompt);
+    showForm() {
+        this.updatePrompt();
         this.gameForm.style.display = "flex";
     }
 
@@ -49,8 +51,7 @@ class Form {
     initializeYesListener() {
         this.yesButton.addEventListener("click", (event) => {
             event.preventDefault();
-            this.sudoku.initBoard();
-            this.sudoku.redrawEntireBoard();
+            this.callback();
             this.hideForm();
         });
     }
@@ -214,16 +215,6 @@ class Board {
         }
     }
 
-    setTargetCell(cell) {
-        if (cell.classList.contains("cell")) {
-            if (this.targetCell) {
-                this.targetCell.element.classList.remove("target");
-            }
-            this.targetCell = this[cell.id];
-            this.targetCell.element.classList.add("target");
-        }
-    }
-
     enterNumber(id, number) {
         if (this[id].number === 0) {
             this.cellsFilled++;
@@ -257,7 +248,18 @@ class Sudoku {
         Sudoku.initNewGameIcon();
         Sudoku.initCheckBoardIcon();
         this.redrawEntireBoard();
-        this.form = new Form(this);
+
+        let newBoardPrompt = "Are you sure you want to start a new game? All progress will be lost.";
+        this.newBoardForm = new Form(newBoardPrompt, () => {
+            this.initBoard();
+            this.redrawEntireBoard();
+        });
+
+        let winnerPrompt = "You have solved this puzzle! Would you like to start a new one?";
+        this.winnerForm = new Form(winnerPrompt, () => {
+            this.initBoard();
+            this.redrawEntireBoard();
+        })
     }
 
     addDividingLines() {
@@ -299,7 +301,7 @@ class Sudoku {
         let checkIcon = document.createElement('div');
         checkIcon.id = 'check-board';
         checkIcon.classList.add('notification');
-        checkIcon.innerHTML = '&#10004';
+        checkIcon.innerHTML = '✘';
         document.querySelector('#board').appendChild(checkIcon);
     }
 
@@ -326,9 +328,6 @@ class Sudoku {
                 }
             }
         }
-//        else {
-//            this.board.getCell(id).classList.remove('note-cell-parent');
-//        }
     }
 
     removeNoteCellDivs() {
@@ -475,7 +474,13 @@ class Sudoku {
                     this.redrawEntireBoard();
 
                     if (this.board.isBoardFilled()) {
-                        this.highlightWinningIcon();
+                        if (this.board.isValidBoard()) {
+                            this.hideWinningIcon();
+                            this.winnerForm.showForm();
+                        }
+                        else {
+                            this.highlightWinningIcon();
+                        }
                     }
                 }
             }
@@ -531,8 +536,8 @@ class Sudoku {
 
         body.addEventListener('click', (event) => {
             if (event.target.id === 'new-game') {
-                this.form.showForm("Are you sure you want to start a new game? All progress will be lost.");
-                if (this.form.selected) {
+                this.newBoardForm.showForm();
+                if (this.newBoardForm.selected) {
                     this.hideWinningIcon();
                     this.initBoard();
                 }
