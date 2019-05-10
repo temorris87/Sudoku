@@ -3,18 +3,6 @@ let boardWidth = 9;
 let numberOfCells = 81;
 let divBoard = document.querySelector("#board");
 
-let defaultBoard = [
-    ["4", " ", "8", " ", " ", "7", "2", " ", "1"],
-    [" ", "3", " ", " ", "8", " ", "9", " ", " "],
-    ["6", "7", "5", " ", "1", " ", " ", "3", " "],
-    [" ", "5", " ", " ", " ", "4", " ", "2", "3"],
-    ["3", " ", " ", "5", " ", " ", "1", "6", " "],
-    [" ", " ", " ", " ", " ", " ", "7", " ", "5"],
-    [" ", " ", "3", "9", " ", " ", " ", " ", "7"],
-    [" ", " ", "1", "7", "6", "3", " ", "4", " "],
-    ["5", " ", " ", " ", "4", "2", "3", " ", "9"]
-];
-
 class Animation {
     static setBlinkingCursor(target) {
         target.element.innerText = "|";
@@ -51,6 +39,7 @@ class Form {
     initializeYesListener() {
         this.yesButton.addEventListener("click", (event) => {
             event.preventDefault();
+            console.log('Calling callback');
             this.callback();
             this.hideForm();
         });
@@ -125,7 +114,7 @@ class Board {
         this.cellsFilled = 0;
         this.targetCell = null;
         this.createCells();
-        this.initBoard(defaultBoard);
+        this.initBoard(getRandomBoard());
     }
 
     getCell(id) {
@@ -190,10 +179,16 @@ class Board {
     }
 
     initBoard(board) {
+        this.cellsFilled = 0;
         let currentCell;
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 currentCell = this[Cell.getCellId(i, j)];
+                currentCell.clearNotes();
+                currentCell.element.classList.remove('default');
+                currentCell.element.classList.remove('note-cell-parent');
+                currentCell.element.classList.remove('target');
+                currentCell.element.classList.remove('blinking');
                 board[i][j] === " " ? currentCell.number = 0 : currentCell.number = board[i][j];
                 divBoard.appendChild(currentCell.element);
 
@@ -262,6 +257,22 @@ class Sudoku {
         })
     }
 
+    removeDefaultFromAllCells() {
+        let cells = document.querySelectorAll('.cell');
+        console.log(cells);
+        for (let i = 0; i < cells.length; i++) {
+            cells[i].classList.remove('default');
+        }
+    }
+
+    updateToNewGame() {
+        console.log('Entered update to new game.');
+        this.removeDefaultFromAllCells();
+        this.board = new Board();
+        this.noteMode = false;
+        this.redrawEntireBoard();
+    }
+
     addDividingLines() {
         for (let j = 0; j < boardWidth; j++) {
             let id = "cell-3" + j.toString();
@@ -306,7 +317,7 @@ class Sudoku {
     }
 
     initBoard() {
-        this.board.initBoard(defaultBoard);
+        this.board.initBoard(getRandomBoard());
         this.redrawEntireBoard();
     }
 
@@ -539,7 +550,8 @@ class Sudoku {
                 this.newBoardForm.showForm();
                 if (this.newBoardForm.selected) {
                     this.hideWinningIcon();
-                    this.initBoard();
+                    this.updateToNewGame();
+//                    this.initBoard();
                 }
             }
             else if (event.target.classList.contains('pencil')) {
