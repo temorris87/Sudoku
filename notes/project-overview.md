@@ -62,13 +62,13 @@ Time frames are also key in the development cycle.  You have limited time to cod
 | --- | :---: |  :---: | :---: | :---: |
 | Default game board. | H | 2hrs|  | 2 hrs |
 | Check if valid board. / Alert User | H | 2.5 hrs|  | 1 hr |
-| Clean UI / Color Theme | H | 3hrs|  | 5 hrs |
-| Refactoring / Design | H | 4 hrs |  | 3 hrs |
-| Allow user to take notes. | H | 3hrs | | |
-| Add default game boards. | L | 1.5hrs|  |  |
-| Give user ability to identify which numbers are inserted incorrectly. | L | 3hrs | | |
-| Generate boards randomly. | L | 5hrs | | |
-| Create an animation of computer solving board. | L | 5hrs+ | | |
+| Clean UI / Color Theme | H | 3hrs|  | 8 hrs |
+| Refactoring / Design | H | 4 hrs |  | 6 hrs |
+| Allow user to take notes. | H | 3hrs | | 4 hrs |
+| Add default game boards. | L | 1.5hrs|  | 45 mins |
+| Give user ability to identify which numbers are inserted incorrectly. | L | 3hrs | | NA |
+| Generate boards randomly. | L | 5hrs | | NA |
+| Create an animation of computer solving board. | L | 5hrs+ | | NA |
 
 
 ## Additional Libraries
